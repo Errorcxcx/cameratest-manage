@@ -3,7 +3,7 @@
     <el-button plain icon="el-icon-menu" size="mini"></el-button>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :top="{path:'/'}">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :top="current.path" v-if="current">
+<!--      <el-breadcrumb-item :top="current.path" v-if="current">-->
 
       </el-breadcrumb-item>
     </el-breadcrumb>

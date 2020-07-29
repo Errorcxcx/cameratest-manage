@@ -1,5 +1,6 @@
 <template>
   <el-menu
+    router
     :default-active="$route.path"
     class="el-menu-vertical-demo"
     background-color="#545c64"
@@ -42,23 +43,23 @@
       return {
         menu: [
           {
-            path: '/',
-            name: 'home',
+            path: '/main',
+            name: 'main',
             label: '首页',
             icon: 'home',
             url: 'Home/Home'
           },
           {
-            path: '/test',
-            name: 'test',
+            path: 'testmanage',
+            name: 'testmanage',
             label: '测试管理',
             icon: 'promotion',
 
             url: 'TestManage/TestManage'
           },
           {
-            path: '/user',
-            name: 'user',
+            path: 'usermanage',
+            name: 'usermanage',
             label: '人员管理',
             icon: 'management',
 
@@ -69,15 +70,15 @@
             icon:'more',
             children: [
               {
-                path: '/page1',
-                name: 'page1',
+                path: '/pageone',
+                name: 'pageone',
                 label: '页面1',
                 icon: 'question',
                 url: 'Other/PageOne'
               },
               {
-                path: '/page2',
-                name: 'page2',
+                path: '/pagetwo',
+                name: 'pagetwo',
                 label: '页面2',
                 icon: 'info',
                 url: 'Other/PageTwo'

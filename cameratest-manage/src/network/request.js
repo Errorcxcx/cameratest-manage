@@ -1,12 +1,11 @@
 import axios from 'axios'
 
 
-
+const instance = axios.create({
+  timeout:3000,
+  baseURL:'http://127.0.0.1:8888/api/private/v1/'
+})
 export function  request(config) {
-  const instance = axios.create({
-    timeout:3000
-  })
-
   //请求拦截器
   instance.interceptors.request.use(config=>{
     return config;
@@ -28,4 +27,10 @@ export function  request(config) {
 
   return instance(config)
 
+}
+export  function getRequest(url,config){
+  return instance.get(url,config)
+}
+export  function postRequest(url,data){
+  return instance.post(url,data)
 }
