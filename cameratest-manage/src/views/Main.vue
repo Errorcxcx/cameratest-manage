@@ -1,16 +1,22 @@
 <template>
-  <el-container style="height: 100%">
-    <el-aside width="auto">
-      <common-aside></common-aside>
-    </el-aside>
+  <el-container class="main-container">
+    <el-header>
+      <common-header></common-header>
+    </el-header>
     <el-container>
-      <el-header>
-        <common-header></common-header>
-      </el-header>
-      <common-tab></common-tab>
-      <el-main>
-        <router-view></router-view>
-      </el-main>
+      <el-aside width="auto">
+        <common-aside></common-aside>
+      </el-aside>
+      <el-container>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
+        <el-footer>
+          <common-tab></common-tab>
+        </el-footer>
+      </el-container>
+
+
     </el-container>
   </el-container>
 </template>
@@ -29,9 +35,18 @@
 <style lang="scss" scoped>
   .el-header {
     background-color: #333;
+
   }
 
   .el-main {
     padding-top: 0;
+    background-color: #eaeaea;
+  }
+
+  .el-footer {
+  background-color: #999999;
+  }
+  .main-container{
+    height: 100%;
   }
 </style>

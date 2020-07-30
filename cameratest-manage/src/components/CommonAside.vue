@@ -6,7 +6,6 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
-    <h3>大米NT</h3>
     <el-menu-item :index="item.path" v-for="item in noChildren" :key="item.path">
       <i :class="'el-icon-s-'+item.icon"></i>
       <span slot="title">{{item.label}}</span>
@@ -14,7 +13,7 @@
     <el-submenu :index="item.label" v-for="(item, index) in hasChildren" :key="index">
       <template slot="title">
         <i :class="'el-icon-' + item.icon"></i>
-        <span slot="title">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
       </template>
       <el-menu-item-group>
         <el-menu-item :index="subItem.path" v-for="(subItem,subIndex) in item.children" :key="subIndex">
@@ -36,21 +35,19 @@
       hasChildren() {
         return this.menu.filter(item => item.children != null)
       }
-
-
     },
     data() {
       return {
         menu: [
           {
-            path: '/main',
-            name: 'main',
+            path: '/home',
+            name: 'home',
             label: '首页',
             icon: 'home',
             url: 'Home/Home'
           },
           {
-            path: 'testmanage',
+            path: '/testmanage',
             name: 'testmanage',
             label: '测试管理',
             icon: 'promotion',
@@ -58,7 +55,7 @@
             url: 'TestManage/TestManage'
           },
           {
-            path: 'usermanage',
+            path: '/usermanage',
             name: 'usermanage',
             label: '人员管理',
             icon: 'management',

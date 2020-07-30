@@ -70,8 +70,7 @@
             if (res.data.meta.status !== 200) return this.$message.error('登陆失败')
             this.$message.success('登陆成功')
             this.$store.commit('setToken',res.data.data.token)
-            this.$router.push({name: 'main'})
-            this.$store.commit('setToken', 'admin')
+            this.$router.push('/main')
           }).catch()
 
         })

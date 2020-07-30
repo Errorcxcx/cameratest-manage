@@ -1,12 +1,16 @@
 <template>
   <div class="l-content">
-    <el-button plain icon="el-icon-menu" size="mini"></el-button>
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :top="{path:'/'}">首页</el-breadcrumb-item>
-<!--      <el-breadcrumb-item :top="current.path" v-if="current">-->
+    <div class="b-content">
+      <img src="../assets/ke6.png" alt="">
+      <span>米果NT系统</span>
+    </div>
+    <el-button type="info" @click="loginOut" size="mini">退出</el-button>
+<!--    <el-breadcrumb separator="/">-->
+<!--      <el-breadcrumb-item :top="{path:'/'}">首页</el-breadcrumb-item>-->
+<!--&lt;!&ndash;      <el-breadcrumb-item :top="current.path" v-if="current">&ndash;&gt;-->
 
-      </el-breadcrumb-item>
-    </el-breadcrumb>
+<!--      </el-breadcrumb-item>-->
+<!--    </el-breadcrumb>-->
   </div>
 </template>
 
@@ -19,6 +23,12 @@
       ...mapState({
 
       })
+    },
+    methods:{
+      loginOut(){
+        this.$store.commit('clearToken')
+        this.$router.push({path:'/login'})
+      }
     }
   }
 </script>
@@ -30,14 +40,27 @@
     align-items: center;
     justify-content: space-between;
   }
+.b-content{
+  display: flex;
+  align-items: center;
+  color: #eaeaea;
+  height: 100%;
+  font-size: 20px;
+  justify-content:center;
+  img{
+    width: 60px;
+    height: 100%;
+  }
+  span{
+    margin-left: 15px;
+  }
 
+}
   .l-content {
+    height: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-
-    .el-button {
-      margin-right: 20px;
-    }
   }
 
   .r-content {

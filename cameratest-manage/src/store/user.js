@@ -12,8 +12,8 @@ export default {
 
     //清空token
     clearToken(state){
-      state.token = ''
       Cookie.remove('token')
+      state.token = ''
     },
 
     //获取token
@@ -21,7 +21,9 @@ export default {
       state.token = Cookie.get('token')
     }
   },
-  actions:{
-
-  }
+  // actions:{
+  //   getTokenAsync(state){
+  //
+  //   }
+  // }
 }
