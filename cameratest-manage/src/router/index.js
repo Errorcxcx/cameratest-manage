@@ -6,11 +6,9 @@ Vue.use(Router)
 
 const main = r => require.ensure([], () => r(require('../views/main')), 'main');
 const login = r => require.ensure([], () => r(require('../views/Login/Login')), 'login');
-const testmanage = r => require.ensure([], () => r(require('../views/Manage/testmanage')), 'testmanage');
-const usermanage = r => require.ensure([], () => r(require('../views/Manage/usermanage')), 'usermanage');
-const pageone = r => require.ensure([], () => r(require('../views/Others/PageOne')), 'pageone');
-const pagetwo = r => require.ensure([], () => r(require('../views/Others/PageTwo')), 'pagetwo');
+
 const home = r => require.ensure([], () => r(require('../views/Home/home')), 'home');
+const user = r => require.ensure([], () => r(require('../views/user/User')), 'user');
 const routes = [
   {
     path: '/',
@@ -30,19 +28,26 @@ const routes = [
   {
     path: '/home',
     component: main,
-    redirect: 'users',
     name: 'main',
     meta: {
       requireAuth: true
     },
     children: [
       {
-        path: '/users',
-        component: home,
+        path: '',
+        redirect:'home',
         meta: {
           requireAuth: true
         }
-      }
+      },
+      {
+        path: '/home',
+        component: home,
+
+        meta: {
+          requireAuth: true
+        }
+      },
     ]
   }
 ]
