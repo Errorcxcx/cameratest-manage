@@ -8,20 +8,30 @@ const instance = axios.create({
 
 export function request(config) {
 
-
+  lanjie()
   return instance(config)
 
 }
 
 export function getRequest(url, config) {
+  lanjie()
   return instance.get(url, config)
 }
 
 export function postRequest(url, data) {
-///请求拦截器
+  lanjie()
+
+  return instance.post(url, data)
+}
+
+function lanjie(){
+  ///请求拦截器
   instance.interceptors.request.use(config => {
+    store.commit('getToken')
+    config.headers.Authorization = store.state.user.token
+    console.log('请求拦截器'+store.state.user.token);
+    console.log(store);
     console.log(config);
-    config.headers.Authorization = store.commit('getToken')
     return config;
   }, err => {
     return Promise.reject(err)
@@ -36,9 +46,5 @@ export function postRequest(url, data) {
   }, err => {
     return Promise.reject(err)
   })
-
-  return instance.post(url, data)
 }
-
-
 

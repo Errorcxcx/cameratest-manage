@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from "../store";
-import home from "../views/Home/home";
 
 Vue.use(Router)
 
@@ -11,10 +10,11 @@ const testmanage = r => require.ensure([], () => r(require('../views/Manage/test
 const usermanage = r => require.ensure([], () => r(require('../views/Manage/usermanage')), 'usermanage');
 const pageone = r => require.ensure([], () => r(require('../views/Others/PageOne')), 'pageone');
 const pagetwo = r => require.ensure([], () => r(require('../views/Others/PageTwo')), 'pagetwo');
+const home = r => require.ensure([], () => r(require('../views/Home/home')), 'home');
 const routes = [
   {
     path: '/',
-    redirect: '/main',
+    redirect: '/home',
     meta: {
       requireAuth: true
     }
@@ -28,64 +28,36 @@ const routes = [
     }
   },
   {
-    path: '/main',
+    path: '/home',
     component: main,
+    redirect: 'users',
     name: 'main',
-    redirect:'/main/home',
-
     meta: {
       requireAuth: true
     },
     children: [
       {
-        path:'',
-        redirect:'/home',
-        meta: {
-          requireAuth: true
-        },
-      },
-      {
-        path:'/home',
-        component:home,
+        path: '/users',
+        component: home,
         meta: {
           requireAuth: true
         }
-      },
-      {
-        path: '/testmanage',
-        component: testmanage,
-        meta: []
-      },
-      {
-        path: '/usermanage',
-        component: usermanage,
-        meta: []
-      },
-      {
-        path: '/pageone',
-        component: pageone,
-        meta: []
-      }, {
-        path: '/pagetwo',
-        component: pagetwo,
-        meta: []
       }
     ]
   }
 ]
- const router =new Router({
+const router = new Router({
   routes
 })
 router.beforeEach((to, from, next) => {
   store.commit('getToken')
   let token = store.state.user.token
-  if (to.matched.some(record => record.meta.requireAuth)) {
-    if (to.name !== 'login' && !token) {
-      next({path: '/login'})
-    } else {
-      console.log('bbbb');
-      next()
-    }
+  if (to.name !== 'login' && !token) {
+    next({path: '/login'})
+  } else {
+    console.log('bbbb');
+    next()
+
   }
   //
   // if(to.path === '/login') return next();
