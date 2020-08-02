@@ -32,7 +32,7 @@
     components: {CommonTab, CommonHeader, CommonAside},
     data(){
       return{
-        collapse:true
+        collapse:false
 
       }
     },

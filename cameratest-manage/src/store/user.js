@@ -1,29 +1,25 @@
 import Cookie from 'js-cookie'
 export default {
-  state:{
-    token: ''
+  state: {
+    token: '',
   },
-  mutations:{
+  mutations: {
     //存放token
-    setToken(state,val){
+    setToken(state, val) {
       state.token = val;
-      Cookie.set('token',val)
+      Cookie.set('token', val)
     },
 
     //清空token
-    clearToken(state){
+    clearToken(state) {
       Cookie.remove('token')
       state.token = ''
     },
 
     //获取token
-    getToken(state){
+    getToken(state) {
       state.token = Cookie.get('token')
     }
-  },
-  // actions:{
-  //   getTokenAsync(state){
-  //
-  //   }
-  // }
+
+  }
 }

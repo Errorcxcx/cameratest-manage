@@ -1,8 +1,8 @@
 <template>
   <el-menu
     router
+    :default-active="activePath"
     unique-opened
-    default-active="route.path"
     :collapse="ccollapse"
     class="el-menu-vertical-demo"
     background-color="#545c64"
@@ -12,15 +12,21 @@
     <!--      <i :class="'el-icon-s-'+item.icon"></i>-->
     <!--      <span slot="title">{{item.label}}</span>-->
     <!--    </el-menu-item>-->
-    <el-submenu :index="'/'+item.path" v-for="(item, key) in menuList" :key="item.id">
+    <el-submenu :index="item.id+''" v-for="(item, key) in menuList" :key="item.id">
       <template slot="title">
         <i :class="iconList[item.id+'']"></i>
         <span>{{ item.authName }}</span>
       </template>
       <el-menu-item-group>
-        <el-menu-item :index="'/'+subItem.path" v-for="(subItem,subIndex) in item.children" :key="subItem.id">
-          <i :class="'el-icon-menu'"></i>
-          <span slot="title">{{ subItem.authName }}</span>
+
+        <el-menu-item :index="'/'+subItem.path" v-for="(subItem,subIndex) in item.children" :key="subItem.id" @click="saveNavState('/'+subItem.path)">
+          <template slot="title">
+            <i :class="'el-icon-menu'"></i>
+            <span >{{ subItem.authName }}</span>
+
+          </template>
+
+
         </el-menu-item>
       </el-menu-item-group>
     </el-submenu>
@@ -34,6 +40,8 @@
     name: "CommonAside",
     created() {
       this.getMenuList();
+      this.activePath = window.sessionStorage.getItem('activePath')
+
     },
     computed: {
       noChildren() {
@@ -106,6 +114,7 @@
         // ],
         //左侧菜单啦
         menuList: [],
+        activePath:''
 
       }
     }
@@ -133,6 +142,10 @@
         }).catch(err => {
 
         })
+      },
+      saveNavState(acticePath){
+        window.sessionStorage.setItem('activePath',acticePath)
+        this.activePath = acticePath
       }
 
     }

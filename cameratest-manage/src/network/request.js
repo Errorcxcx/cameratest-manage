@@ -13,9 +13,9 @@ export function request(config) {
 
 }
 
-export function getRequest(url, config) {
+export function getRequest(url, parms) {
   lanjie()
-  return instance.get(url, config)
+  return instance.get(url, parms)
 }
 
 export function postRequest(url, data) {
@@ -30,8 +30,6 @@ function lanjie(){
     store.commit('getToken')
     config.headers.Authorization = store.state.user.token
     console.log('请求拦截器'+store.state.user.token);
-    console.log(store);
-    console.log(config);
     return config;
   }, err => {
     return Promise.reject(err)
