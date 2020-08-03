@@ -13,9 +13,9 @@ export function request(config) {
 
 }
 
-export function getRequest(url, parms) {
+export function getRequest(url, config) {
   lanjie()
-  return instance.get(url, parms)
+  return instance.get(url, config)
 }
 
 export function postRequest(url, data) {
@@ -23,13 +23,16 @@ export function postRequest(url, data) {
 
   return instance.post(url, data)
 }
+export function putRequest(url) {
+  lanjie()
+  return instance.put(url)
+}
 
 function lanjie(){
   ///请求拦截器
   instance.interceptors.request.use(config => {
     store.commit('getToken')
     config.headers.Authorization = store.state.user.token
-    console.log('请求拦截器'+store.state.user.token);
     return config;
   }, err => {
     return Promise.reject(err)
