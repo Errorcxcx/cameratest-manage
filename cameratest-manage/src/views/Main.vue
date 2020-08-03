@@ -10,7 +10,8 @@
       </el-aside>
       <el-container>
         <el-main>
-          <router-view></router-view>
+          <keep-alive>          <router-view></router-view>
+          </keep-alive>
         </el-main>
         <el-footer>
           <common-tab></common-tab>

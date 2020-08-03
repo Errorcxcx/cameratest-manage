@@ -8,11 +8,11 @@ const main = r => require.ensure([], () => r(require('../views/main')), 'main');
 const login = r => require.ensure([], () => r(require('../views/Login/Login')), 'login');
 
 const home = r => require.ensure([], () => r(require('../views/Home/home')), 'home');
-const user = r => require.ensure([], () => r(require('../views/user/User')), 'user');
+const users = r => require.ensure([], () => r(require('../views/user/User')), 'users');
 const routes = [
   {
     path: '/',
-    redirect: '/home',
+    redirect: '/main',
     meta: {
       requireAuth: true
     }
@@ -26,16 +26,18 @@ const routes = [
     }
   },
   {
-    path: '/home',
+    path: '/main',
     component: main,
     name: 'main',
+    redirect:'login',
     meta: {
-      requireAuth: true
+      requireAuth: true,
     },
     children: [
       {
         path: '',
-        redirect:'home',
+        name:'home',
+        component:home,
         meta: {
           requireAuth: true
         }
@@ -48,6 +50,14 @@ const routes = [
           requireAuth: true
         }
       },
+      {
+        path: '/users',
+        component: users,
+
+        meta: {
+          requireAuth: true
+        }
+      }
     ]
   }
 ]
