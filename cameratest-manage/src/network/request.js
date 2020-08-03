@@ -23,15 +23,16 @@ export function postRequest(url, data) {
 
   return instance.post(url, data)
 }
+export function putRequest(url) {
+  lanjie()
+  return instance.put(url)
+}
 
 function lanjie(){
   ///请求拦截器
   instance.interceptors.request.use(config => {
     store.commit('getToken')
     config.headers.Authorization = store.state.user.token
-    console.log('请求拦截器'+store.state.user.token);
-    console.log(store);
-    console.log(config);
     return config;
   }, err => {
     return Promise.reject(err)
