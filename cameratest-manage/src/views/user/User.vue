@@ -9,12 +9,14 @@
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input clearable placeholder="请输入内容" class="input-with-select" v-model="queryInfo.query"
+                    @clear="getUserList">
+            <el-button slot="append" icon="el-icon-search" @click="getUserList"
+            ></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
 
@@ -30,7 +32,7 @@
           <template v-slot="scope">
             <el-switch
               v-model="scope.row.mg_state"
-              @change="userStatChanged(scope.row)"
+              @change="userStateChanged(scope.row)"
               active-color="#13ce66"
               inactive-color="#ff4949">
             </el-switch>
@@ -52,7 +54,6 @@
 
         </el-table-column>
       </el-table>
-
       <!--      分页区域-->
       <el-pagination
         @size-change="handleSizeChange"
@@ -63,9 +64,37 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalSize">
       </el-pagination>
-
-
     </el-card>
+
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addDialogVisible"
+      width="50%">
+      <!--      内容主体区-->
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
+
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <!--      底部区域-->
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="addDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addUser">确 定</el-button>
+      <el-button type="error" @click="addDialogClosed">重置</el-button>
+
+      </span>
+    </el-dialog>
 
 
   </div>
@@ -77,6 +106,25 @@
   export default {
     name: "User",
     data() {
+      //邮箱验证规则
+      var checkEmail = (rule, value, cb) => {
+        const regMail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+        if (regMail.test(value)) {
+          //
+          return cb()
+
+        }
+        cb(new Error('请输入合法邮箱'))
+      }
+      //验证手机号规则
+      var checkMobile = (rule, value, cb) => {
+        const regMobile = /^(0|86|17951)?(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+        if (regMobile.test(value)) {
+          return cb()
+
+        }
+        return cb(new Error('请输入合法手机号码'))
+      }
       return {
         userList: [],
         queryInfo: {
@@ -84,8 +132,34 @@
           pagenum: 1,
           pagesize: 1
         },
-        totalSize: 0
+        totalSize: 0,
+        addDialogVisible: false,
+        addForm: {
 
+          username: '',
+          password: '',
+          email: '',
+          mobile: ''
+
+        },
+        addFormRules: {
+          username: [
+            {required: true, message: '请输入用户邮箱', trigger: 'blur'},
+            {min: 3, max: 10, message: '用户名在3~10个字符之间', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: '请输入用户密码', trigger: 'blur'},
+            {min: 3, max: 10, message: '用户密码在3~10个字符之间', trigger: 'blur'}
+          ],
+          email: [
+            {required: true, message: '请输入用户邮箱', trigger: 'blur'},
+            {validator: checkEmail, trigger: 'blur'}
+          ],
+          mobile: [
+            {required: true, message: '请输入电话号码', trigger: 'blur'},
+            {validator: checkMobile, trigger: 'blur'}
+          ]
+        }
       }
     },
     created() {
@@ -94,6 +168,8 @@
     methods: {
       async getUserList() {
         await getRequest('/users', {params: this.queryInfo}).then(res => {
+          console.log(res.data.data);
+          console.log(res.data.data.total);
           if (res.data.meta.status !== 200) return this.$message.error('获取失败')
           this.userList = res.data.data.users
           this.totalSize = res.data.data.total
@@ -115,19 +191,31 @@
 
       },
       //监听 switch 开关状态
-      userStatChanged(userinfo) {
+      userStateChanged(userinfo) {
         console.log(userinfo);
         putRequest(`users/${userinfo.id}/state/${userinfo.mg_state}`)
-          .then(res =>{
+          .then(res => {
             console.log(res.data.meta);
-            if(res.data.meta.status !== 200) {
+            if (res.data.meta.status !== 200) {
               userinfo.mg_state = !userinfo.mg_state
               return this.$message.error('设置状态失败！')
             }
             this.$message.success('设置状态成功！')
           })
-          .catch(err=>{
+          .catch(err => {
           })
+      },
+      //监听添加用户对话框的关闭事件
+      addDialogClosed(){
+        this.$refs.addFormRef.resetFields()
+      },
+      addUser(){
+        this.$refs.addFormRef.validate(valid =>{
+          console.log('-----'+valid);
+          if(valid){
+
+          }
+        })
       }
     }
   }

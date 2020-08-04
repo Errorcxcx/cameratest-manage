@@ -35,7 +35,10 @@
   export default {
     name: "Login",
     data() {
+
+
       return {
+
         //登录表单数据
         form: {
           username: 'admin',
@@ -66,11 +69,13 @@
             return
           }
           await postRequest('login', this.form).then(res => {
-            console.log('ccccccc  '+res.data.data.token)
+            console.log('ccccccc  ' + res.data.data.token)
             if (res.data.meta.status !== 200) return this.$message.error('登陆失败')
             this.$message.success('登陆成功')
-            this.$store.commit('setToken',res.data.data.token)
-            this.$router.push('/main')
+            this.$store.commit('setToken', res.data.data.token)
+            // this.$router.push('/main')
+            this.$router.push({name: 'main'})
+
           }).catch()
 
         })
