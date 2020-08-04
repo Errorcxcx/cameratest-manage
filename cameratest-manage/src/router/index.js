@@ -29,7 +29,6 @@ const routes = [
     path: '/main',
     component: main,
     name: 'main',
-    redirect:'login',
     meta: {
       requireAuth: true,
     },
@@ -45,7 +44,6 @@ const routes = [
       {
         path: '/home',
         component: home,
-
         meta: {
           requireAuth: true
         }
@@ -67,12 +65,11 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   store.commit('getToken')
   let token = store.state.user.token
-  if (to.name !== 'login' && !token) {
+  if (!token && to.name !== 'login'  ) {
     next({path: '/login'})
   } else {
     console.log('bbbb');
     next()
-
   }
   //
   // if(to.path === '/login') return next();
