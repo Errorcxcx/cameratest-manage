@@ -41,7 +41,7 @@
         <el-table-column label="操作">
           <template v-slot="scope">
             <!--           修改按钮-->
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button type="primary" icon="el-icon-edit" circle @click="showEditDialog(scope.row.id)"></el-button>
             <!--            删除按钮-->
             <el-button type="danger" icon="el-icon-delete" circle></el-button>
             <!--            分配角色按钮-->
@@ -66,6 +66,7 @@
       </el-pagination>
     </el-card>
 
+    <!--    添加用户的对话框-->
     <el-dialog
       title="添加用户"
       :visible.sync="addDialogVisible"
@@ -91,17 +92,27 @@
       <span slot="footer" class="dialog-footer">
       <el-button @click="addDialogVisible = false">取 消</el-button>
       <el-button type="primary" @click="addUser">确 定</el-button>
-      <el-button type="error" @click="addDialogClosed">重置</el-button>
+      <el-button type="danger" @click="addDialogClosed">重置</el-button>
 
       </span>
     </el-dialog>
 
+    <!--    修改用户的对话框-->
+    <el-dialog
+      title="修改用户信息"
+      :visible.sync="editDialogVisible">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
-  import {getRequest, putRequest} from "../../network/request";
+  import {getRequest, putRequest, postRequest} from "../../network/request";
 
   export default {
     name: "User",
@@ -134,17 +145,18 @@
         },
         totalSize: 0,
         addDialogVisible: false,
+        editDialogVisible: false,
         addForm: {
 
-          username: '',
-          password: '',
-          email: '',
-          mobile: ''
+          username: '吴彦祖',
+          password: '123456',
+          email: '1661217770@qq.com',
+          mobile: '18843109256'
 
         },
         addFormRules: {
           username: [
-            {required: true, message: '请输入用户邮箱', trigger: 'blur'},
+            {required: true, message: '请输入用户姓名', trigger: 'blur'},
             {min: 3, max: 10, message: '用户名在3~10个字符之间', trigger: 'blur'}
           ],
           password: [
@@ -206,16 +218,46 @@
           })
       },
       //监听添加用户对话框的关闭事件
-      addDialogClosed(){
+      addDialogClosed() {
         this.$refs.addFormRef.resetFields()
       },
-      addUser(){
-        this.$refs.addFormRef.validate(valid =>{
-          console.log('-----'+valid);
-          if(valid){
+      addUser() {
+        this.$refs.addFormRef.validate(async valid => {
+          console.log('-----' + valid);
+          if (valid) {
+            //发起添加用户的网络请求
+            await postRequest('users', this.addForm).then(res => {
+              console.log(res.data);
+              if (res.data.meta.status !== 201) {
+                return this.$message.error('添加用户失败')
+              }
+              this.$message.success('添加用户成功')
+
+              //隐藏添加用户对话框
+              this.addDialogVisible = false
+
+              //重新获取用户列表
+              this.getUserList()
+            }).catch(err => {
+
+            })
 
           }
+
         })
+      },
+      //展示编辑用户对话框
+      async showEditDialog(id) {
+        console.log('-------'+id);
+        await getRequest('users/'+id).then(res=>{
+          if(res.data.meta.status !== 200){
+            return this.$message.error('查询用户信息失败！！！')
+          }
+          this.editForm
+        }).catch(err=>{
+
+        })
+
       }
     }
   }

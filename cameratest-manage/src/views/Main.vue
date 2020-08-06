@@ -1,7 +1,7 @@
 <template>
   <el-container class="main-container">
     <el-header>
-      <common-header ></common-header>
+      <common-header></common-header>
     </el-header>
     <el-container>
       <el-aside width="auto">
@@ -10,7 +10,8 @@
       </el-aside>
       <el-container>
         <el-main>
-          <keep-alive>          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
           </keep-alive>
         </el-main>
         <el-footer>
@@ -31,15 +32,15 @@
   export default {
     name: "Main",
     components: {CommonTab, CommonHeader, CommonAside},
-    data(){
-      return{
-        collapse:true
+    data() {
+      return {
+        collapse: true
 
       }
     },
-    methods:{
+    methods: {
       //菜单折叠
-      toggleCollapase(){
+      toggleCollapase() {
         this.collapse = !this.collapse
       }
     }
@@ -58,12 +59,14 @@
   }
 
   .el-footer {
-  background-color: #999999;
+    background-color: #999999;
   }
-  .main-container{
+
+  .main-container {
     height: 100%;
   }
-  .toggle-button{
+
+  .toggle-button {
     background-color: #505458;
     font-size: 10px;
     line-height: 24px;
