@@ -65,6 +65,8 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   store.commit('getToken')
   let token = store.state.user.token
+  console.log(token);
+
   if (!token && to.name !== 'login'  ) {
     next({path: '/login'})
   } else {

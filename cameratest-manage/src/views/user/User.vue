@@ -99,9 +99,20 @@
 
     <!--    修改用户的对话框-->
     <el-dialog
+      width="50%"
       title="修改用户信息"
       :visible.sync="editDialogVisible">
-      <span>这是一段信息</span>
+      <el-form :rules="editFoemRules" ref="editFormRef" :model="editForm" label-width="70px">
+        <el-form-item label="用户名" prop="username">
+          <el-input disabled v-model="editForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
@@ -152,6 +163,21 @@
           password: '123456',
           email: '1661217770@qq.com',
           mobile: '18843109256'
+
+        },
+        editForm: {
+          username:'',
+          password:'',
+          mobile:''
+        },
+        editFormRules: {
+          email:[
+            {required: true, message: '请输入用户邮箱', trigger: 'blur'},
+            {validator: checkEmail, trigger: 'blur'}          ],
+          mobile: [
+            {required: true, message: '请输入电话号码', trigger: 'blur'},
+            {validator: checkMobile, trigger: 'blur'}
+          ]
 
         },
         addFormRules: {
@@ -248,13 +274,14 @@
       },
       //展示编辑用户对话框
       async showEditDialog(id) {
-        console.log('-------'+id);
-        await getRequest('users/'+id).then(res=>{
-          if(res.data.meta.status !== 200){
+        console.log('-------' + id);
+        await getRequest('users/' + id).then(res => {
+          if (res.data.meta.status !== 200) {
             return this.$message.error('查询用户信息失败！！！')
           }
-          this.editForm
-        }).catch(err=>{
+          this.editForm = res.data.data
+          this.editDialogVisible = true
+        }).catch(err => {
 
         })
 
