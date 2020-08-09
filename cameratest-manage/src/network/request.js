@@ -23,9 +23,13 @@ export function postRequest(url, data) {
 
   return instance.post(url, data)
 }
-export function putRequest(url) {
+export function putRequest(url,data) {
   lanjie()
-  return instance.put(url)
+  return instance.put(url,data)
+}
+export function deleteRequest(url,data) {
+  lanjie()
+  return instance.delete(url,data)
 }
 
 function lanjie(){

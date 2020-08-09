@@ -6,9 +6,11 @@ Vue.use(Router)
 
 const main = r => require.ensure([], () => r(require('../views/main')), 'main');
 const login = r => require.ensure([], () => r(require('../views/Login/Login')), 'login');
-
+const rights = r => require.ensure([], () => r(require('../views/rights/Rights')), 'rights');
 const home = r => require.ensure([], () => r(require('../views/Home/home')), 'home');
 const users = r => require.ensure([], () => r(require('../views/user/User')), 'users');
+const roles = r => require.ensure([], () => r(require('../views/rights/Roles')), 'roles');
+
 const routes = [
   {
     path: '/',
@@ -35,8 +37,8 @@ const routes = [
     children: [
       {
         path: '',
-        name:'home',
-        component:home,
+        name: 'home',
+        component: home,
         meta: {
           requireAuth: true
         }
@@ -55,6 +57,23 @@ const routes = [
         meta: {
           requireAuth: true
         }
+
+      },
+      {
+        path: '/rights',
+        component: rights,
+
+        meta: {
+          requireAuth: true
+        }
+      },
+      {
+        path: '/roles',
+        component: roles,
+
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   }
@@ -65,7 +84,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   store.commit('getToken')
   let token = store.state.user.token
-  if (!token && to.name !== 'login'  ) {
+  console.log(token);
+
+  if (!token && to.name !== 'login') {
     next({path: '/login'})
   } else {
     console.log('bbbb');
