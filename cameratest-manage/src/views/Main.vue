@@ -37,7 +37,7 @@
 
     data() {
       return {
-        collapse: true
+        collapse: false
 
       }
     },
