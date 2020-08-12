@@ -10,7 +10,7 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary">添加分类</el-button>
+          <el-button type="primary" @click="showAddCateDialog">添加分类</el-button>
 
 
         </el-col>
@@ -55,24 +55,27 @@
         :total="total">
       </el-pagination>
     </el-card>
-<!--    添加分类对话框-->
+    <!--    添加分类对话框-->
     <el-dialog
       title="添加分类"
       :visible.sync="addCateDialogVisible"
       width="50%">
-        <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
-          <el-form-item label="ss" prop="">
-            <el-input v-model=""></el-input>
-          </el-form-item>
-          <el-form-item label="ss" prop="">
-            <el-input v-model=""></el-input>
-          </el-form-item>
-        </el-form>
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="addForm.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类">
+          <el-cascader
+            v-model="selectedKeys"
+            :props="cascaderProps"
+            :options="parentCateList"
+            @change="parentCateChange"></el-cascader>
+        </el-form-item>
+      </el-form>
       <!--      底部区域-->
       <span slot="footer" class="dialog-footer">
       <el-button @click="addCateDialogVisible = false">取 消</el-button>
       <el-button type="primary" @click="addCate">确 定</el-button>
-      <el-button type="danger" @click="addDialogClosed">重置</el-button>
       </span>
     </el-dialog>
   </div>
@@ -95,11 +98,29 @@
         },
         total: 0,
 
-        addCateDialogVisible:false,
-        addForm:{},
-        addFormRules:{
+        addCateDialogVisible: false,
+        addForm: {
+          cat_name: '',
+          cat_pid:0,
+          cat_level:0
 
-        }
+
+        },
+        //选中的父级分类数组
+        selectedKeys:[],
+
+        //指定级联选择器的配置对象
+        cascaderProps:{
+          value:'cat_id',
+          label:'cat_name',
+          children:'children'
+
+        },
+        addFormRules: {
+          cat_name: [{required: true, message: '请输入分类名称', trigger: 'blur'}]
+
+        },
+        parentCateList:[]
       }
     },
     created() {
@@ -129,6 +150,32 @@
       handleCurrentChange(newPage) {
         this.queryInfo.pagenum = newPage
         this.getCateList()
+      },
+      addCate() {
+      },
+      addDialogClosed() {
+      },
+      showAddCateDialog() {
+        this.getParentCateList()
+        this.addCateDialogVisible = true
+      },
+      //获取父级分类的数据列表
+      getParentCateList(){
+        getRequest('categories',{params:{type:2}})
+        .then(res=>{
+          if(res.data.meta.status!==200) return this.$message.error('获取父级分类失败')
+
+          this.parentCateList    = res.data.data
+
+          console.log(this.parentCateList);
+
+        })
+        .catch()
+
+      },
+      //选择项发生变化触发这个函数
+      parentCateChange(){
+        console.log(this.selectedKeys);
       }
     }
   }
