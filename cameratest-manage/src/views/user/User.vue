@@ -267,6 +267,7 @@
       //监听添加用户对话框的关闭事件
       addDialogClosed() {
         this.$refs.addFormRef.resetFields()
+        this.addDialogVisible = false
       },
       addUser() {
         this.$refs.addFormRef.validate(async valid => {
@@ -348,6 +349,14 @@
               return this.$message.error('删除失败！！')
             }
             this.$message.success('删除成功')
+            console.log(this.queryInfo.pagesize+'********'+this.totalSize+'-----'+this.queryInfo.pagesize);
+
+            if(this.totalSize % this.queryInfo.pagesize === 1 || this.queryInfo.pagesize === 1){
+              if(this.queryInfo.pagenum ===(Math.ceil(this.totalSize / this.queryInfo.pagesize))){
+                this.queryInfo.pagenum = this.queryInfo.pagenum-1
+                }
+            }
+            console.log(this.queryInfo);
             this.getUserList()
           })
           .catch(err => {
