@@ -33,7 +33,15 @@
           <el-table-column type="expand">
             <template v-slot="scope">
               <el-tag v-for="(item,i) in scope.row.attr_vals" :key="i" closable>{{item}}</el-tag>
-
+              <el-input
+                class=".input-new-tag"
+                v-if="scope.row.inputVisible"
+                v-model="scope.row.inputValue"
+                ref="saveTagInput"
+                @keyup.enter.native="handleInputConfirm(scope.row)"
+                @blur="handleInputConfirm(scope.row)"
+              ></el-input>
+              <el-button v-else @click="showInput(scope.row)">+ New Tag</el-button>
             </template>
           </el-table-column>
           <el-table-column type="index" label="#"></el-table-column>
@@ -153,7 +161,6 @@
             {required: true, message: '请输入名称', trigger: 'blur'},
           ]
         }
-
       }
     },
     created() {
@@ -193,8 +200,10 @@
           .then(res => {
             if (res.data.meta.status !== 200) return this.$message.error('获取属性参数失败！！！！')
             console.log(res.data);
-            res.data.data.forEach(item=>{
-              item.attr_vals = item.attr_vals.split(' ')
+            res.data.data.forEach(item => {
+              item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+              item.inputVisible = false
+              item.inputValue = ''
             })
             if (this.activeName === 'many') {
               this.manyTableData = res.data.data
@@ -244,13 +253,13 @@
         this.$refs.editFormRef.resetFields()
       },
       editParams() {
-        this.$refs.editFormRef.validate(valid=>{
-          if(!valid) return
-          putRequest(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`,{
-            attr_name:this.editForm.attr_name,
-            attr_sel:this.activeName
-          }).then(res=>{
-            if(res.data.meta.status!==200) this.$message.error('修改参数失败')
+        this.$refs.editFormRef.validate(valid => {
+          if (!valid) return
+          putRequest(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`, {
+            attr_name: this.editForm.attr_name,
+            attr_sel: this.activeName
+          }).then(res => {
+            if (res.data.meta.status !== 200) this.$message.error('修改参数失败')
             this.$message.success('修改数据成功')
             this.editDialogVisible = false
             this.getParamsData()
@@ -259,7 +268,7 @@
 
         })
       },
-      async removeParams(attr_id){
+      async removeParams(attr_id) {
         const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -281,6 +290,31 @@
           .catch(err => {
 
           })
+      },
+      handleClose(tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+      showInput(item) {
+        item.inputVisible = true
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      //添加动态属性下的tag标签
+      handleInputConfirm(item) {
+        let inputValue = item.inputValue
+        if (item.inputValue.trim().length === 0) {
+          item.inputVisible = false
+          item.inputValue = ''
+          return
+        }
+        item.attr_vals.push(inputValue.trim())
+        console.log(item.attr_vals);
+        item.inputVisible = false
+        item.inputValue = ''
+        putRequest()
+
       }
     }, computed: {
       isBtnDisable() {
@@ -310,7 +344,12 @@
   .cat_opt {
     margin: 15px 0px;
   }
-  .el-tag{
+
+  .el-tag {
     margin: 8px;
+  }
+
+  .input-new-tag {
+    width: 120px;
   }
 </style>
