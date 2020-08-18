@@ -12,6 +12,7 @@ const users = r => require.ensure([], () => r(require('../views/user/User')), 'u
 const roles = r => require.ensure([], () => r(require('../views/rights/Roles')), 'roles');
 const cate = r => require.ensure([], () => r(require('../views/goods/Cate')), 'cate');
 const params = r => require.ensure([], () => r(require('../views/goods/Params')), 'params');
+const list = r => require.ensure([], () => r(require('../views/goods/List')), 'list');
 
 const routes = [
   {
@@ -88,6 +89,14 @@ const routes = [
       {
         path: '/params',
         component: params,
+
+        meta: {
+          requireAuth: true
+        }
+      },
+      {
+        path: '/goods',
+        component: list,
 
         meta: {
           requireAuth: true

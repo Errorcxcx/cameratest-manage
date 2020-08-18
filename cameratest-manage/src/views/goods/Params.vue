@@ -32,7 +32,9 @@
         <el-table :data="manyTableData" border stripe>
           <el-table-column type="expand">
             <template v-slot="scope">
-              <el-tag v-for="(item,i) in scope.row.attr_vals" :key="i" closable>{{item}}</el-tag>
+              <el-tag v-for="(item,i) in scope.row.attr_vals" :key="i" closable @close="handleClose(i,scope.row)">
+                {{item}}
+              </el-tag>
               <el-input
                 class=".input-new-tag"
                 v-if="scope.row.inputVisible"
@@ -191,6 +193,8 @@
         //选中的不是三级分类
         if (this.selectedCateKeys.length !== 3) {
           this.selectedCateKeys = []
+          this.manyTableData = []
+          this.onlyTableData = []
           return
         }
         //选中的是三级分类
@@ -291,8 +295,10 @@
 
           })
       },
-      handleClose(tag) {
-        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      //删除对应得参数可选项
+      handleClose(i, item) {
+        item.attr_vals.splice(i, 1)
+        this.saveAttrVals(item)
       },
       showInput(item) {
         item.inputVisible = true
@@ -313,28 +319,48 @@
         console.log(item.attr_vals);
         item.inputVisible = false
         item.inputValue = ''
-        putRequest()
-
-      }
-    }, computed: {
-      isBtnDisable() {
-        return this.selectedCateKeys.length !== 3
+        this.saveAttrVals(item);
       },
-      cateId() {
-        if (this.selectedCateKeys.length === 3) {
-
-          return this.selectedCateKeys[2]
-        }
-        return null
-      },
-      titleText() {
-        if (this.activeName === 'many') {
-          return '动态参数'
-        }
-
-        return '静态属性'
+      //发起请求保存在数据库中
+      saveAttrVals(item) {
+        putRequest(`categories/${this.cateId}/attributes/${item.attr_id}`, {
+          attr_name: item.attr_name,
+          attr_sel: item.attr_sel,
+          attr_vals: item.attr_vals.join(' ')
+        })
+          .then(res => {
+            if (res.data.meta.status !== 200) return this.$message.error('修改参数失败')
+            this.$message.success('修改成功')
+          })
+          .catch()
       }
+
+  }
+  ,
+  computed: {
+    isBtnDisable()
+    {
+      return this.selectedCateKeys.length !== 3
     }
+  ,
+    cateId()
+    {
+      if (this.selectedCateKeys.length === 3) {
+
+        return this.selectedCateKeys[2]
+      }
+      return null
+    }
+  ,
+    titleText()
+    {
+      if (this.activeName === 'many') {
+        return '动态参数'
+      }
+
+      return '静态属性'
+    }
+  }
 
   }
 </script>
