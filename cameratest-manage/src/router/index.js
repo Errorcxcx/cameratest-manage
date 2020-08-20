@@ -34,6 +34,7 @@ const routes = [
   {
     path: '/main',
     component: main,
+    name:'main',
     meta: {
       requireAuth: true,
     },
