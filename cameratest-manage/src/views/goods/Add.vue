@@ -67,6 +67,7 @@
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :headers="headersObj"
+              :on-success="handleSuccess"
               list-type="picture">
               <el-button type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -132,7 +133,10 @@
         //图片上传组件的headers请求头对象
         headersObj: {
           Authorization: this.$store.state.user.token
-        }
+        },
+
+        //图片的数组
+        pics:[]
 
       }
     },
@@ -205,6 +209,14 @@
       //处理图片删除效果
       handleRemove() {
 
+      },
+      //监听图片上传成功
+      handleSuccess(response) {
+        const picInfo = {
+          pic: response.data.tmp_path,
+
+        }
+        this.addForm.pics.push(picInfo)
       }
     },
     computed: {
