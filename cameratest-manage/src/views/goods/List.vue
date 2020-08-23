@@ -38,7 +38,7 @@
         </el-table-column>
         <el-table-column label="操作" width="300px">
           <template v-slot="scope">
-            <el-button type="primary" icon="el-icon-edit">编辑</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="editById(scope.row.goods_id)">编辑</el-button>
             <el-button type="warning" icon="el-icon-delete" @click="removeById(scope.row.goods_id)">删除</el-button>
 
           </template>
